@@ -34,11 +34,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Move()
     {
-        isGrounded = (Mathf.Abs(myBody.velocity.y) < .0001f) ? true : false;
+        isGrounded = (Mathf.Abs(myBody.velocity.y) < .001f) ? true : false;
         
         if (control.movement.x != 0)
         {
-            if (Mathf.Abs(myBody.velocity.x) < maxVelocity.x)
+            if (Mathf.Abs(myBody.velocity.x) < maxVelocity.x || transform.localScale.x * myBody.velocity.x < 0)
             {
                 float velocityX = control.movement.x * (isGrounded ? speed : speed * jetSpeedMultiplier);
                 myBody.AddForce(new Vector2(velocityX, 0f));
@@ -52,16 +52,15 @@ public class PlayerMovement : MonoBehaviour
 
         if (control.movement.y > 0)
         {
+            anim.SetTrigger("JetTrigger");
             if (Mathf.Abs(myBody.velocity.y) < maxVelocity.y)
             {
                 myBody.AddForce(new Vector2(0f, jetSpeed));
             }
-            anim.SetBool("JetTrigger", true);
         }
-        else if (Mathf.Abs(myBody.velocity.y) > 0f)
+        else if (myBody.velocity.y != 0f)
         {
             anim.SetInteger("AnimState", 2);
-            anim.SetBool("JetTrigger", false);
         }
 
     }
